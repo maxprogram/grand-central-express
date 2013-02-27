@@ -11,13 +11,16 @@ var fn = GrandCentral.prototype;
 
 
 fn._cleanPath = function(path) {
+    if (!path) return undefined;
     return path.replace(/\s/g, '')
                .replace(/^\/|\/$/, '');
 };
 
-fn.routes = function(routesPath, controllerPath) {
-    routesPath = this.dir + this._cleanPath(routesPath) || "config/routes";
-    controllerPath = this.dir + this._cleanPath(controllerPath) || "controllers";
+fn.route = function(routesPath, controllerPath) {
+    routesPath = this._cleanPath(routesPath) || "config/routes";
+    controllerPath = this._cleanPath(controllerPath) || "controllers";
+    routesPath = this.dir + routesPath;
+    controllerPath = this.dir + controllerPath;
 
     return new Router(this.app, routesPath, controllerPath);
 };

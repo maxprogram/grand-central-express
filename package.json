@@ -13,7 +13,11 @@
     "test": "mocha -R spec"
   },
 
+  "devDependencies": {
+      "mocha": "0.11.x"
+  },
+
   "dependencies": {
-    "mocha": "0.11.x"
+
   }
 }

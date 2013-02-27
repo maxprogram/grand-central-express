@@ -1,0 +1,19 @@
+{
+  "name": "grand-central-express",
+  "version": "0.0.1",
+  "private": false,
+  "author": {
+    "name": "Max Olson",
+    "url": "http://www.github.com/maxprogram"
+  },
+
+  "main": "index",
+
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+
+  "dependencies": {
+    "mocha": "0.11.x"
+  }
+}

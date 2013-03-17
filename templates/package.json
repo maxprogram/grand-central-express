@@ -1,0 +1,15 @@
+{
+    "name": "grand-central-project",
+    "version": "0.0.1",
+    "description": "",
+    "private": true,
+    "scripts": {
+        "start": "node run"
+    },
+    "dependencies": {
+        "express": "3.0.0rc5",
+        "ejs": "*",
+        "grand-central-express": "*",
+        "less-middleware": "*"
+    }
+}

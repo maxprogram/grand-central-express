@@ -2,7 +2,23 @@
 
 A Rails-inspired Express framework for Node.
 
+## TODO
+
+* Scaffolding generators
+    * gce generate model User
+    * gce generate controller about
+    * gce backbone model User
+* Activerecord for DB connections
+* Uglify-js
+* GruntJS?
+
 ## Features
+
+### Command Line & Scaffolding
+
+* gce server|s|start|run -- starts Express server
+* gce version|v|-v -- gets Grand Central version
+* gce new Project
 
 ### Router
 
@@ -15,9 +31,9 @@ __#route(routes_path, controllers_path)__
 var express = require('express'),
     GrandCentral = require('grand-central-express'),
     app = express(),
-    gc = new GrandCentral(app, __dirname);
+    gce = new GrandCentral(app, __dirname);
 
-gc.route();
+gce.route();
 ```
 
 In __/config/routes.js__:

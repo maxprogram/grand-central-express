@@ -16,9 +16,9 @@ A Rails-inspired Express framework for Node.
 
 ### Command Line & Scaffolding
 
-* gce server|s|start|run -- starts Express server
-* gce version|v|-v -- gets Grand Central version
-* gce new Project
+* __gce server|s|start|run__ -- starts Express server
+* __gce version|v|-v__ -- gets Grand Central version
+* __gce new <name>__ -- generates new app scaffolding in current folder
 
 ### Router
 

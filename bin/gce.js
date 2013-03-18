@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-var _ = require('underscore'),
-    fs = require('fs'),
-    path = require('path'),
-    http = require('http'),
-    exec = require('child_process').exec,
-    argv = require('optimist').argv,
-    config = require('../lib/config');
+var _       = require('underscore'),
+    fs      = require('fs'),
+    path    = require('path'),
+    http    = require('http'),
+    exec    = require('child_process').exec,
+    argv    = require('optimist').argv,
+    config  = require('../lib/config');
 
 var gcDir   = path.join(__dirname, ".."),
     tempDir = path.join(gcDir, "templates"),
@@ -17,8 +17,11 @@ if (argv._[0] && _.contains(['server', 's', 'start', 'run'], argv._[0])) {
     var app = path.join(appDir, "app.js"),
         isApp = fs.existsSync(app);
     if (!isApp) app = path.join(appDir, "index.js");
-    app = require(app);
 
+    var env = argv.e || argv.environment || arv.env || 'development';
+    process.env.NODE_ENV = env;
+
+    app = require(app);
     var port = argv.p || app.get('port');
 
     http.createServer(app).listen(port, function(){
@@ -97,7 +100,6 @@ else if (argv._[0] && argv._[0].match(/^g$|^ge$|^gen$|^gene$|^gener$|^genera$|^g
 
 
 function createFolder(newPath) {
-    //newPath = '/' + newPath;
     if (pathDoesntExist(ap(newPath))) {
         fs.mkdirSync(ap(newPath));
         report('create', newPath);

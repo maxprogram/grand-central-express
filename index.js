@@ -8,6 +8,7 @@ module.exports = GrandCentral;
 function GrandCentral(app, dir) {
     this.app = app;
     this.dir = dir + '/';
+    this.env = process.env.NODE_ENV || 'development';
 }
 
 var fn = GrandCentral.prototype;
@@ -24,11 +25,11 @@ fn.route = function(routesPath, controllerPath) {
 
 fn.uglify = function() {
     var src  = path.join(this.dir, "client"),
-        dest = path.join(this.dir, "assets", "javascripts");
+        dest = path.join(this.dir, "assets", "javascripts"),
+        minify = (this.env == 'development') ? false : true;
     return uglify({
         src: src,
         dest: dest,
-        compress: false,
-        mangle: true
+        minify: minify
     });
 };

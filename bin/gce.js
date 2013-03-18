@@ -64,9 +64,23 @@ else if (argv._[0] && _.contains(['new'], argv._[0])) {
     createFolder('models');
     createFolder('assets');
     createFolder('assets/images');
+    createFolder('assets/javascripts');
     createFolder('assets/stylesheets');
     copyTemplate('assets/stylesheets/styles.less');
     copyTemplate('assets/stylesheets/mixins.less');
+
+    createFolder('client');
+    copyTemplate('client/lib.js');
+    copyTemplate('client/app.js');
+    createFolder('client/models');
+    createFolder('client/views');
+    copyTemplate('client/views/app.js');
+    createFolder('client/collections');
+    createFolder('client/routers');
+    createFolder('client/lib');
+    copyTemplate('client/lib/jquery.js');
+    copyTemplate('client/lib/underscore.js');
+    copyTemplate('client/lib/backbone.js');
 
     // run npm install
     report('run', 'npm install');

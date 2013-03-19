@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
 var _       = require('underscore'),
+    _str    = require('underscore.string'),
     fs      = require('fs'),
     path    = require('path'),
     http    = require('http'),
     exec    = require('child_process').exec,
     argv    = require('optimist').argv,
+    ejs     = require('ejs'),
     config  = require('../lib/config');
 
 var gcDir   = path.join(__dirname, ".."),
@@ -18,7 +20,7 @@ if (argv._[0] && _.contains(['server', 's', 'start', 'run'], argv._[0])) {
         isApp = fs.existsSync(app);
     if (!isApp) app = path.join(appDir, "index.js");
 
-    var env = argv.e || argv.environment || arv.env || 'development';
+    var env = argv.e || argv.environment || argv.env || 'development';
     process.env.NODE_ENV = env;
 
     app = require(app);
@@ -37,10 +39,7 @@ else if (argv.v || argv.version || (argv._[0] && _.contains(['v', 'version'], ar
 // Create new app scaffolding
 else if (argv._[0] && _.contains(['new'], argv._[0])) {
     var appName = argv._[1];
-    if (!appName) {
-        report("error", "Please specify a project name");
-        process.exit(1);
-    }
+    if (!appName) Error("Please specify a project name");
 
     report('create', 'Grand Central Express app "' + appName + '"');
 
@@ -93,12 +92,20 @@ else if (argv._[0] && _.contains(['new'], argv._[0])) {
     });
 }
 
-// Generates model or controller scaffolding
+// Generates model/controller scaffolding
 else if (argv._[0] && argv._[0].match(/^g$|^ge$|^gen$|^gene$|^gener$|^genera$|^generat$|^generate$/)) {
     // TODO
+    if (!argv._[1]) Error("What should be generated?");
+
+    else if (_.contains(['controller'], argv._[1])) {
+        if (!argv._[2]) Error("Controller needs a name");
+        var name = argv._[2], actions = argv._;
+        actions.splice(0,3);
+        generateController(name, actions);
+    }
 }
 
-
+// Creates a new folder in the app
 function createFolder(newPath) {
     if (pathDoesntExist(ap(newPath))) {
         fs.mkdirSync(ap(newPath));
@@ -106,18 +113,56 @@ function createFolder(newPath) {
     } else report('exist', newPath);
 }
 
+// Copies and renders a template file to the app
 function copyTemplate(file, options) {
     var replace = true;
     if (!options) replace = false;
 
     var template = fs.readFileSync(tp(file));
 
-    if (replace) {}
+    if (replace) {
+        template = ejs.render("" + template, options);
+        file = path.join(path.dirname(file), options.name + ".js");
+    } else file = ap(file);
 
-    if (pathDoesntExist(ap(file))) {
-        fs.writeFileSync(ap(file), template);
+    if (pathDoesntExist(file)) {
+        fs.writeFileSync(file, template);
         report('create', file);
     } else report('exist', file);
+}
+
+// Generates controller, actions, routes
+function generateController(name, actions) {
+    var routes = [];
+    name = name.toLowerCase();
+    actions.forEach(function(a) {
+        a = a.toLowerCase();
+        routes.push(["match", "/"+name+"/"+a, name+"#"+a]);
+    });
+    if (actions[0]) addRoutes(routes);
+
+    copyTemplate('controllers/controller.js', { name: name, actions: actions });
+}
+
+// Adds routes to config/routes.js
+function addRoutes(routes, x, y) {
+    if (typeof routes === 'string') routes = [[routes, x, y]];
+    if (typeof routes[0] === 'string') routes = [routes];
+
+    var output = "";
+    routes.forEach(function(r) {
+        output += "\n    ";
+        output += r[0] + "('" + r[1] + "', '" + r[2] + "');";
+    });
+
+    var routesOld = "" + fs.readFileSync(ap('config/routes.js'));
+
+    var module = routesOld.match(/module.ex.+{/)[0],
+        newline = module + output,
+        routesNew = routesOld.replace(/module.ex.+{/, newline);
+
+    fs.writeFileSync(ap('config/routes.js'), routesNew);
+    report('update', 'routes');
 }
 
 function pathDoesntExist(p) {
@@ -140,10 +185,15 @@ function report(task, file) {
 
     if (_.contains(['create','run'], task))
         console.log(bold + green + cols(task) + reset + file);
-    else if (_.contains(['exist','identical'], task))
+    else if (_.contains(['exist','identical','update'], task))
         console.log(bold + blue + cols(task) + reset + file);
     else if (_.contains(['conflict','error'], task))
         console.log(bold + red + cols(task) + reset + file);
+}
+
+function Error(msg) {
+    report('error', msg);
+    process.exit(1);
 }
 
 function tp(file) {

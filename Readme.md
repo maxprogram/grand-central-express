@@ -13,18 +13,19 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 ### Command Line
 
-* [NewProject](New Project)
-* [LaunchServer](Launch Server)
+* [New Project](NewProject)
+* [Launch Server](LaunchServer)
 * Generate Scaffold
-* [GenerateController](Generate Controller)
-* [GenerateModel](Generate Model)
+* [Generate Controller](GenerateController)
+* [Generate Model](GenerateModel)
 * [Version](Version)
 
 ### Features
 
 * [Router](Router)
-* [ORM](ORM/ActiveRecord)
-* [Compiler](Client-side Compiler)
+* [Models](Models)
+* [ORM/ActiveRecord](ORM)
+* [Client-side Compiler](Compiler)
 
 ## Command Line
 
@@ -156,13 +157,13 @@ module.exports = function(val) {
     };
 };
 ```
-`val` contains ORM's [https://github.com/dresende/node-orm2/blob/master/lib/Validators.js](common validators). Or you can write your own.
+`val` contains ORM's [common validators](https://github.com/dresende/node-orm2/blob/master/lib/Validators.js). Or you can write your own.
 
 ---------------------------------------
 <a name="ORM" />
 ### ORM/ActiveRecord
 
-Uses [http://dresende.github.com/node-orm2/](the ORM library by dresende). Go there for more detailed documentation.
+Uses [the ORM library by dresende](http://dresende.github.com/node-orm2/). Go there for more detailed documentation.
 
 Turned on by default, but can be turned off by passing `orm: true` to the GCE router.
 

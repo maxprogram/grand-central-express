@@ -56,6 +56,7 @@ else if (argv._[0] && _.contains(['new'], argv._[0])) {
 
     createFolder('config');
     copyTemplate('config/routes.js');
+    copyTemplate('config/db.json');
 
     createFolder('controllers');
     copyTemplate('controllers/home.js');
@@ -99,10 +100,19 @@ else if (argv._[0] && argv._[0].match(/^g$|^ge$|^gen$|^gene$|^gener$|^genera$|^g
 
     else if (_.contains(['controller'], argv._[1])) {
         if (!argv._[2]) Error("Controller needs a name");
-        var name = argv._[2], actions = argv._;
+        var cName = argv._[2], actions = argv._;
         actions.splice(0,3);
-        generateController(name, actions);
+        generateController(cName, actions);
     }
+
+    else if (_.contains(['model'], argv._[1])) {
+        if (!argv._[2]) Error("Model needs a name");
+        var mName = argv._[2], cols = argv._;
+        cols.splice(0,3);
+        generateModel(mName, cols);
+    }
+
+    else Error("Generator not recognized");
 }
 
 // Creates a new folder in the app
@@ -123,10 +133,11 @@ function copyTemplate(file, options) {
     if (replace) {
         template = ejs.render("" + template, options);
         file = path.join(path.dirname(file), options.name + ".js");
-    } else file = ap(file);
+    }
 
-    if (pathDoesntExist(file)) {
-        fs.writeFileSync(file, template);
+    var filePath = ap(file);
+    if (pathDoesntExist(filePath)) {
+        fs.writeFileSync(filePath, template);
         report('create', file);
     } else report('exist', file);
 }
@@ -142,6 +153,18 @@ function generateController(name, actions) {
     if (actions[0]) addRoutes(routes);
 
     copyTemplate('controllers/controller.js', { name: name, actions: actions });
+}
+
+// Generates model
+function generateModel(name, fields) {
+    name = _str.capitalize(name);
+    var schema = [];
+    fields.forEach(function(c) {
+        c = c.toLowerCase();
+        schema.push(c.split(":"));
+    });
+
+    copyTemplate('models/model.js', { name: name, fields: schema });
 }
 
 // Adds routes to config/routes.js

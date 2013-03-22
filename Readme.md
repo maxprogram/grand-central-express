@@ -5,10 +5,9 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 ## TODO
 
 * Scaffolding generators
-    * gce generate model
     * gce generate scaffold
     * gce backbone model
-* Activerecord for DB connections
+* DB migration (ORM sync)
 
 ## Documentation
 
@@ -24,6 +23,7 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 ### Features
 
 * [Router](Router)
+* [ORM](ORM/ActiveRecord)
 * [Compiler](Client-side Compiler)
 
 ## Command Line
@@ -90,10 +90,11 @@ Gets your version of Grand Central Express.
 <a name="Router" />
 ### Router
 
-__#route(routes_path, controllers_path)__
+__#route(options)__
 
-* *routes_path* defaults to `'config/routes'`
-* *controllers_path* defaults to `'controllers'`
+* *options.routes* is the routes path (defaults to `'config/routes'`)
+* *options.controllers* is the controllers path (defaults to `'controllers'`)
+* *options.orm* toggles use of ORM in controllers
 
 ```js
 var express = require('express'),
@@ -123,6 +124,57 @@ PUT    /project/:id  => /controllers/project.js#update
 DELETE /project/:id  => /controllers/project.js#destroy
 GET    /project/new  => /controllers/project.js#form
 GET    /project/edit => /controllers/project.js#edit
+```
+
+---------------------------------------
+<a name="Models" />
+### Models
+
+Define in the `/models` folder, with capitalized names like `Person.js`. The model is defined like so:
+```js
+module.exports = function(val) {
+    return {
+        name: "Person",
+
+        schema: {
+            name: String,
+            email: String,
+            admin: Boolean,
+            rank: Number
+        },
+
+        methods: {
+            isAdmin: function() {
+                return this.admin;
+            }
+        },
+
+        validations: {
+            email: val.patterns.email('Invalid email')
+        }
+
+    };
+};
+```
+`val` contains ORM's [https://github.com/dresende/node-orm2/blob/master/lib/Validators.js](common validators). Or you can write your own.
+
+---------------------------------------
+<a name="ORM" />
+### ORM/ActiveRecord
+
+Uses [http://dresende.github.com/node-orm2/](the ORM library by dresende). Go there for more detailed documentation.
+
+Turned on by default, but can be turned off by passing `orm: true` to the GCE router.
+
+Models are accessed in controllers:
+```js
+exports.show = function(req, res, models) {
+    var id = req.param('id');
+    models.Person.get(id, function(err, person) {
+        if (err) throw err;
+        res.json(person);
+    });
+};
 ```
 
 ---------------------------------------

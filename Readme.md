@@ -1,6 +1,6 @@
 # Grand Central Express
 
-A Rails-inspired Express framework for Node. Integrates with ejs view engine, LESS CSS compiling, and Backbone.js.
+A Rails-inspired Express framework for Node. Integrates with ejs view engine, LESS CSS compiling, and Backbone.js. This is a work in progress. Everything featured in the docs below should be functional.
 
 ## TODO
 
@@ -13,19 +13,19 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 ### Command Line
 
-* [New Project](NewProject)
-* [Launch Server](LaunchServer)
+* [New Project](#NewProject)
+* [Launch Server](#LaunchServer)
 * Generate Scaffold
-* [Generate Controller](GenerateController)
-* [Generate Model](GenerateModel)
-* [Version](Version)
+* [Generate Controller](#GenerateController)
+* [Generate Model](#GenerateModel)
+* [Version](#Version)
 
 ### Features
 
-* [Router](Router)
-* [Models](Models)
-* [ORM/ActiveRecord](ORM)
-* [Client-side Compiler](Compiler)
+* [Router](#Router)
+* [Models](#Models)
+* [ORM/ActiveRecord](#ORM)
+* [Client-side Compiler](#Compiler)
 
 ## Command Line
 

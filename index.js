@@ -1,7 +1,8 @@
 var path = require('path'),
     fs = require('fs');
 
-var Router = require('./lib/router');
+var Router = require('./lib/router'),
+    ORM = require('./lib/orm');
 
 module.exports = GrandCentral;
 
@@ -9,21 +10,24 @@ function GrandCentral(app, dir) {
     this.app = app;
     this.dir = dir + '/';
     this.env = process.env.NODE_ENV || 'development';
+
+    var db = this.getDatabaseUrl();
+    this.orm = new ORM(dir, db[0], db[1]);
 }
 
 var fn = GrandCentral.prototype;
 
 
-fn.route = function(routesPath, controllerPath, orm) {
+fn.route = function(routesPath, controllerPath, routeORM) {
     var app = this.app;
 
-    orm = orm || true;
+    routeORM = routeORM || true;
     routesPath = routesPath || "config/routes";
     controllerPath = controllerPath || "controllers";
     routesPath = path.join(this.dir, routesPath);
     controllerPath = path.join(this.dir, controllerPath);
 
-    if (orm) this.getORM(function(models) {
+    if (routeORM) this.orm.getModels(function(models) {
         return new Router(app, routesPath, controllerPath, models);
     });
     else return new Router(app, routesPath, controllerPath, null);
@@ -56,28 +60,5 @@ fn.getDatabaseUrl = function(dbFile) {
         host = (db.host!=="") ? db.host + "/" : "",
         uri = db.adapter + "://" + login + host + db.database;
 
-    return [uri, db.adapter];
-};
-
-fn.getORM = function(callback) {
-    var orm = require('orm'),
-        uri = this.getDatabaseUrl()[0],
-        dir = path.join(this.dir, 'models');
-
-    // TODO: Switch between ORM & Mongoose if using MongoDB
-    orm.connect(uri, function(err, db) {
-        if (err) throw err;
-        var models = {};
-
-        fs.readdirSync(dir).forEach(function(model) {
-            var m = require(path.join(dir, model))(orm.validators),
-                name = m.name.toLowerCase();
-            models[m.name] = db.define(name, m.schema, {
-                methods: m.methods,
-                validations: m.validations
-            });
-        });
-
-        callback(models);
-    });
+    return [db.adapter, uri];
 };

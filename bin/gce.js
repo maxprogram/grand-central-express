@@ -8,7 +8,8 @@ var _       = require('underscore'),
     exec    = require('child_process').exec,
     argv    = require('optimist').argv,
     ejs     = require('ejs'),
-    config  = require('../lib/config');
+    config  = require('../lib/config'),
+    GCE     = require('../index.js');
 
 var gcDir   = path.join(__dirname, ".."),
     tempDir = path.join(gcDir, "templates"),
@@ -34,6 +35,23 @@ if (argv._[0] && _.contains(['server', 's', 'start', 'run'], argv._[0])) {
 // Gets version
 else if (argv.v || argv.version || (argv._[0] && _.contains(['v', 'version'], argv._[0]))) {
     console.log('v' + config.version());
+}
+
+// Migrate models to database
+else if (argv._[0] && _.contains(['migrate', 'mig'], argv._[0])) {
+    var env = argv.env || argv.e || argv.environment || 'development';
+    process.env.NODE_ENV = env;
+
+    var app = require(path.join(appDir, 'app.js'));
+    app.getModels(function(models) {
+        // Iterates over & syncs available models
+        _.keys(models).forEach(function(i) {
+            models[i].migrate(function(err) {
+                if (err) Error(err);
+                report('migrate', i);
+            });
+        });
+    });
 }
 
 // Create new app scaffolding
@@ -112,6 +130,13 @@ else if (argv._[0] && argv._[0].match(/^g$|^ge$|^gen$|^gene$|^gener$|^genera$|^g
         generateModel(mName, cols);
     }
 
+    else if (_.contains(['scaffold'], argv._[1])) {
+        if (!argv._[2]) Error("Model needs a name");
+        var mName = argv._[2], cols = argv._;
+        cols.splice(0,3);
+        generateScaffold(mName, cols);
+    }
+
     else Error("Generator not recognized");
 }
 
@@ -163,8 +188,18 @@ function generateModel(name, fields) {
         c = c.toLowerCase();
         schema.push(c.split(":"));
     });
+    schema.push(["created_at","date"]);
+    schema.push(["updated_at","date"]);
 
     copyTemplate('models/model.js', { name: name, fields: schema });
+}
+
+// Generates scaffolding
+function generateScaffold(name, fields) {
+    generateModel(name, fields);
+    name = name.toLowerCase();
+    copyTemplate('controllers/crud.js', { name: name });
+    addRoutes(["resources", "/" + name, name]);
 }
 
 // Adds routes to config/routes.js
@@ -206,12 +241,14 @@ function report(task, file) {
         return str += txt + "  ";
     }
 
-    if (_.contains(['create','run'], task))
+    if (_.contains(['create','run','migrate'], task))
         console.log(bold + green + cols(task) + reset + file);
     else if (_.contains(['exist','identical','update'], task))
         console.log(bold + blue + cols(task) + reset + file);
     else if (_.contains(['conflict','error'], task))
         console.log(bold + red + cols(task) + reset + file);
+    else if (_.contains(['done'], task))
+        console.log(bold + cols(task) + reset + file);
 }
 
 function Error(msg) {

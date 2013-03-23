@@ -8,8 +8,10 @@ module.exports = function(val) {
             <%= f[0] %>: <%=: f[1] | capitalize %><%= (i+1==fields.length) ? '' : ',' %><% }); %>
         },
 
+        validations: {},
+
         methods: {},
 
-        validations: {}
+        relationships: []
     };
 };

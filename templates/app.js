@@ -23,6 +23,7 @@ app.configure('development', function(){
     app.use(express.errorHandler());
 });
 
+app.getModels = function(cb) { return gce.orm.getModels(cb); };
 gce.route();
 
 module.exports = app;

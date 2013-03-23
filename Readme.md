@@ -6,8 +6,7 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 * Scaffolding generators
     * gce generate scaffold
-    * gce backbone model
-* DB migration (ORM sync)
+    * gce backbone collection (with scaffold?)
 
 ## Documentation
 
@@ -18,6 +17,7 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 * Generate Scaffold
 * [Generate Controller](#GenerateController)
 * [Generate Model](#GenerateModel)
+* [Migrate](#Migrate)
 * [Version](#Version)
 
 ### Features
@@ -46,9 +46,9 @@ $ gce new project
 <a name="LaunchServer" />
 ### Launch Server
 
-__gce server|s|start|run__
+__gce server | s | start | run__
 
-Starts Express server on port 3000. Use the -p option to change ports, and the -e option to change environments.
+Starts Express server on port 3000. Use the __-p__ option to change ports, and the __-e__ option to change environments.
 ```sh
 $ gce server
 Grand Central Express server listening on port 3000
@@ -77,10 +77,18 @@ $ gce generate model book title:string author:string
 ```
 
 ---------------------------------------
+<a name="Migrate" />
+### Migrate
+
+__gce migrate__
+
+Migrates and syncs your model schemas to the database. Use the __-e__ option to change database environments.
+
+---------------------------------------
 <a name="Version" />
 ### Version
 
-__gce version|v|-v__
+__gce version | v | -v__
 
 Gets your version of Grand Central Express.
 
@@ -123,7 +131,6 @@ GET    /project/:id  => /controllers/project.js#show
 POST   /project      => /controllers/project.js#create
 PUT    /project/:id  => /controllers/project.js#update
 DELETE /project/:id  => /controllers/project.js#destroy
-GET    /project/new  => /controllers/project.js#form
 GET    /project/edit => /controllers/project.js#edit
 ```
 
@@ -131,25 +138,22 @@ GET    /project/edit => /controllers/project.js#edit
 <a name="Models" />
 ### Models
 
-Define in the `/models` folder, with capitalized names like `Person.js`. The model is defined like so:
+Defined in the `/models` folder, with capitalized names like `Person.js`. The model is defined like so:
 ```js
 module.exports = function(val) {
     return {
         name: "Person",
-
         schema: {
             name: String,
             email: String,
             admin: Boolean,
             rank: Number
         },
-
         methods: {
             isAdmin: function() {
                 return this.admin;
             }
         },
-
         validations: {
             email: val.patterns.email('Invalid email')
         }
@@ -165,7 +169,7 @@ module.exports = function(val) {
 
 Uses [the ORM library by dresende](http://dresende.github.com/node-orm2/). Go there for more detailed documentation.
 
-Turned on by default, but can be turned off by passing `orm: true` to the GCE router.
+Turned on by default, but can be turned off by passing `{orm: true}` to the GCE router.
 
 Models are accessed in controllers:
 ```js

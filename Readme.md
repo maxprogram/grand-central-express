@@ -4,9 +4,10 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 ## TODO
 
-* Scaffolding generators
-    * gce generate scaffold
+* Backbone.js generators
     * gce backbone collection (with scaffold?)
+    * gce backbone view
+* Create custom ORM (in working __orm__ branch)
 
 ## Documentation
 
@@ -14,7 +15,7 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 * [New Project](#NewProject)
 * [Launch Server](#LaunchServer)
-* Generate Scaffold
+* [Generate Scaffold](#GenerateScaffold)
 * [Generate Controller](#GenerateController)
 * [Generate Model](#GenerateModel)
 * [Migrate](#Migrate)
@@ -77,6 +78,17 @@ $ gce generate model book title:string author:string
 ```
 
 ---------------------------------------
+<a name="GenerateScaffold" />
+### Generate Scaffold
+
+__gce generate scaffold NAME [field:type field:type]__
+
+Generates a model with provided attributes and a RESTful JSON controller. (*The actions currently don't include update or destroy. These are coming once the custom ORM is buildt.*)
+```sh
+$ gce generate scaffold animal name:string species:string
+```
+
+---------------------------------------
 <a name="Migrate" />
 ### Migrate
 
@@ -117,21 +129,23 @@ gce.route();
 In __/config/routes.js__:
 ```js
 module.exports = function(match, resources) {
-    match('/',            'home#index');
-    match('/users',       'user#list', {via: 'post'});
-    resources('/project', 'project');
+    match('/',      'home#index');
+    match('/users', 'user#list', {via: 'post'});
+    resources('/animal', 'animal');
 };
 ```
 Routes:
 ```
-GET    /             => /controllers/home.js#index
-POST   /users        => /controllers/user.js#list
-GET    /project      => /controllers/project.js#index
-GET    /project/:id  => /controllers/project.js#show
-POST   /project      => /controllers/project.js#create
-PUT    /project/:id  => /controllers/project.js#update
-DELETE /project/:id  => /controllers/project.js#destroy
-GET    /project/edit => /controllers/project.js#edit
+GET    /            => /controllers/home.js#index
+POST   /users       => /controllers/user.js#list
+GET    /animal      => /controllers/animal.js#index
+GET    /animal/:id  => /controllers/animal.js#show
+POST   /animal      => /controllers/animal.js#create
+PUT    /animal/:id  => /controllers/animal.js#update
+DELETE /animal/:id  => /controllers/animal.js#destroy
+GET    /animal/create     => /controllers/animal.js#create
+GET    /animal/edit/:id   => /controllers/animal.js#update
+GET    /animal/delete/:id => /controllers/animal.js#destroy
 ```
 
 ---------------------------------------
@@ -167,7 +181,7 @@ module.exports = function(val) {
 <a name="ORM" />
 ### ORM/ActiveRecord
 
-Uses [the ORM library by dresende](http://dresende.github.com/node-orm2/). Go there for more detailed documentation.
+Currently uses [node-orm2 by dresende](http://dresende.github.com/node-orm2/). Go there for more detailed documentation.
 
 Turned on by default, but can be turned off by passing `{orm: true}` to the GCE router.
 
@@ -175,7 +189,7 @@ Models are accessed in controllers:
 ```js
 exports.show = function(req, res, models) {
     var id = req.param('id');
-    models.Person.get(id, function(err, person) {
+    models.Person.findById(id, function(err, person) {
         if (err) throw err;
         res.json(person);
     });
@@ -186,15 +200,18 @@ exports.show = function(req, res, models) {
 <a name="Compiler" />
 ### Client-Side Compiler
 
-All client-side javascript goes in the __/client__ directory. When a file is requested, it is compiled using UglifyJS into the public __/javascripts__ directory. Other javascipt files can be required using `//= require` or `//= require_tree`, which will be compiled into the requested file.
+All client-side javascript goes in the __/client__ directory. When a file is requested, it is compiled into a single JS file in the public __/javascripts__ directory. Other javascipt files can be required using `//= require` or `//= require_tree`, which will be compiled into the requested file.
+
+In the *development* environment, required JS files are concatenated and labeled as is. In *production*, they are minified using UglifyJS.
 
 __/client/test.js__:
 ```js
 //= require lib/jquery
+//= require_tree ./ui
 
 $(function(){ document.write("Hello World") });
 ```
-This would output to __javascripts/test.js__, and be linked to in views as:
+This would output to __javascripts/test.js__, and will include the required files/directories in the order they are listed. It can be linked to in views as:
 ```html
 <script type="text/javascript" src="javascripts/test.js"></script>
 ```

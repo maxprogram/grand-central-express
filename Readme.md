@@ -83,7 +83,7 @@ $ gce generate model book title:string author:string
 
 __gce generate scaffold NAME [field:type field:type]__
 
-Generates a model with provided attributes and a RESTful JSON controller. (*The actions currently don't include update or destroy. These are coming once the custom ORM is buildt.*)
+Generates a model with provided attributes and a RESTful JSON controller. (**The actions currently don't include __update__ or __destroy__. These are coming once the custom ORM is built.**)
 ```sh
 $ gce generate scaffold animal name:string species:string
 ```
@@ -171,7 +171,6 @@ module.exports = function(val) {
         validations: {
             email: val.patterns.email('Invalid email')
         }
-
     };
 };
 ```
@@ -202,7 +201,9 @@ exports.show = function(req, res, models) {
 
 All client-side javascript goes in the __/client__ directory. When a file is requested, it is compiled into a single JS file in the public __/javascripts__ directory. Other javascipt files can be required using `//= require` or `//= require_tree`, which will be compiled into the requested file.
 
-In the *development* environment, required JS files are concatenated and labeled as is. In *production*, they are minified using UglifyJS.
+In the *development* environment, required JS files are concatenated and labeled as is. The GCE client-side library handles errors to return the correct file names and line numbers for debugging.
+
+In *production*, they are minified using UglifyJS.
 
 __/client/test.js__:
 ```js

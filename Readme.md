@@ -4,7 +4,6 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 ## TODO
 
-* Backbone.js templating
 * Create custom ORM (in working __orm__ branch)
 
 ## Documentation
@@ -247,4 +246,21 @@ $(function(){ document.write("Hello World") });
 This would output to __javascripts/test.js__, and will include the required files/directories in the order they are listed. It can be linked to in views as:
 ```html
 <script type="text/javascript" src="javascripts/test.js"></script>
+```
+__Templating__
+
+Javascript templating is also supported. Templates should go in the *client/templates* folder. GCE supports __Underscore (.ejs)__ and __Handlebars (.hbs)__ templates. The templates can be accessed through `app.jst['path/file']`.
+
+So if your template's actual path was *client/templates/home/index.ejs* the corresponding Backbone code would be:
+```js
+var template = app.jst['home/index'];
+this.$el.html(template({ DATA }));
+```
+
+A Handlebars file (.hbs) requires the [Handlebars runtime library](http://handlebarsjs.com/) not included in GCE. Each template is also a Handlbars partial with the name `path.file` that can be accessed with `{{> path.file}}`. So for the example below, the partial name would be `list`.
+
+*client/templates/list.hbs*:
+```js
+var template = app.jst['list'];
+this.$el.html(template({ DATA }));
 ```

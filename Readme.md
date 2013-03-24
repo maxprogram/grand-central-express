@@ -4,9 +4,7 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 ## TODO
 
-* Backbone.js generators
-    * gce backbone collection (with scaffold?)
-    * gce backbone view
+* Backbone.js templating
 * Create custom ORM (in working __orm__ branch)
 
 ## Documentation
@@ -18,6 +16,8 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 * [Generate Scaffold](#GenerateScaffold)
 * [Generate Controller](#GenerateController)
 * [Generate Model](#GenerateModel)
+* [Generate Backbone Scaffold](#GenerateBackbone)
+* [Generate Backbone View](#GenerateBackboneView)
 * [Migrate](#Migrate)
 * [Version](#Version)
 
@@ -64,6 +64,7 @@ __gce generate controller NAME [action action]__
 Generates a controller and associated routes with provided actions.
 ```sh
 $ gce generate controller Company about team contact
+    create  controller/company.js
 ```
 
 ---------------------------------------
@@ -75,6 +76,7 @@ __gce generate model NAME [field:type field:type]__
 Generates a model with provided attributes.
 ```sh
 $ gce generate model book title:string author:string
+    create  models/Book.js
 ```
 
 ---------------------------------------
@@ -83,9 +85,39 @@ $ gce generate model book title:string author:string
 
 __gce generate scaffold NAME [field:type field:type]__
 
-Generates a model with provided attributes and a RESTful JSON controller. (**The actions currently don't include __update__ or __destroy__. These are coming once the custom ORM is built.**)
+Generates a model with provided attributes and a RESTful JSON controller. Also generates client-side Backbone model & collection. **The actions currently don't include __update__ or __destroy__. These are coming once the custom ORM is built.**
+
+Pass -c to avoid creating Backbone scaffold.
 ```sh
-$ gce generate scaffold animal name:string species:string
+$ gce generate scaffold animal name:string species:string -c
+    create  models/Animal.js
+    create  controllers/animal.js
+    update  routes
+```
+
+---------------------------------------
+<a name="GenerateBackbone" />
+### Generate Backbone Scaffold
+
+__gce [backbone | bb] [scaffold | model] NAME [field:type field:type]__
+
+Generates Backbone model and collection for given name and fields.
+```sh
+$ gce bb scaffold animal name:string species:string
+    create  client/models/Animal.js
+    create  client/collections/animalList.js
+```
+
+---------------------------------------
+<a name="GenerateBackboneView" />
+### Generate Backbone View
+
+__gce [backbone | bb] view NAME__
+
+Generates Backbone view.
+```sh
+$ gce bb view item
+    create  client/views/itemView.js
 ```
 
 ---------------------------------------

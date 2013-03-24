@@ -115,7 +115,6 @@ else if (argv._[0] && _.contains(['new'], argv._[0])) {
 
 // Generates model/controller scaffolding
 else if (argv._[0] && argv._[0].match(/^g$|^ge$|^gen$|^gene$|^gener$|^genera$|^generat$|^generate$/)) {
-    // TODO
     if (!argv._[1]) Error("What should be generated?");
 
     else if (_.contains(['controller'], argv._[1])) {
@@ -137,6 +136,26 @@ else if (argv._[0] && argv._[0].match(/^g$|^ge$|^gen$|^gene$|^gener$|^genera$|^g
         var mName = argv._[2], cols = argv._;
         cols.splice(0,3);
         generateScaffold(mName, cols);
+        if (!argv.c) generateBBScaffold(mName, cols);
+    }
+
+    else Error("Generator not recognized");
+}
+
+// Generates Backbone templates
+else if (argv._[0] && _.contains(['backbone', 'bb'], argv._[0])) {
+    if (!argv._[1]) Error("What should be generated?");
+
+    else if (_.contains(['model', 'collection', 'scaffold'], argv._[1])) {
+        if (!argv._[2]) Error("Model needs a name");
+        var mName = argv._[2], cols = argv._;
+        cols.splice(0,3);
+        generateBBScaffold(mName, cols);
+    }
+
+    else if (_.contains(['view'], argv._[1])) {
+        if (!argv._[2]) Error("View needs a name");
+        generateBBView(argv._[2]);
     }
 
     else Error("Generator not recognized");
@@ -158,8 +177,9 @@ function copyTemplate(file, options) {
     var template = fs.readFileSync(tp(file));
 
     if (replace) {
+        var end = options.end || "";
         template = ejs.render("" + template, options);
-        file = path.join(path.dirname(file), options.name + ".js");
+        file = path.join(path.dirname(file), options.name + end + ".js");
     }
 
     var filePath = ap(file);
@@ -202,6 +222,26 @@ function generateScaffold(name, fields) {
     name = name.toLowerCase();
     copyTemplate('controllers/crud.js', { name: name });
     addRoutes(["resources", "/" + name, name]);
+}
+
+// Generate Backbone scaffold
+function generateBBScaffold(name, fields) {
+    name = name.toLowerCase();
+    var nameUC = _str.capitalize(name);
+    var schema = [];
+    fields.forEach(function(c) {
+        c = c.toLowerCase();
+        schema.push(c.split(":"));
+    });
+
+    copyTemplate('client/models/model.js', { name: nameUC, fields: schema, nameLC: name });
+    copyTemplate('client/collections/collection.js', { name: name, end: 'List' });
+}
+
+// Generate Backbone view
+function generateBBView(name) {
+    name = name.toLowerCase();
+    copyTemplate('client/views/view.js', { name: name, end: 'View' });
 }
 
 // Adds routes to config/routes.js

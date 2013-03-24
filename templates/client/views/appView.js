@@ -1,6 +1,6 @@
 var app = app || {};
 
-(function($) {
+$(function($) {
 
     app.AppView = Backbone.View.extend({
         el: $(window),
@@ -9,4 +9,4 @@ var app = app || {};
         }
     });
 
-})(jQuery);
+});

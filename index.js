@@ -10,6 +10,7 @@ function GrandCentral(app, dir) {
     this.app = app;
     this.dir = dir + '/';
     this.env = process.env.NODE_ENV || 'development';
+    this.time = new Date();
 
     var db = this.getDatabaseUrl();
     this.orm = new ORM(dir, db[0], db[1]);
@@ -40,7 +41,8 @@ fn.uglify = function() {
     return require('./lib/uglify')({
         src: src,
         dest: dest,
-        minify: minify
+        minify: minify,
+        time: this.time
     });
 };
 

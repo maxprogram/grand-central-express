@@ -30,11 +30,13 @@
   "dependencies": {
         "underscore": "*",
         "underscore.string": "*",
+        "glob": "3.1.21",
         "optimist": "~0.3.5",
         "uglify-js": "2.2.5",
         "async": "~0.2.6",
         "step": "~0.0.5",
         "ejs": "~0.8.3",
+        "handlebars": "1.0.10",
         "orm": "2.0.5"
   }
 }

@@ -99,6 +99,7 @@ else if (argv._[0] && _.contains(['new'], argv._[0])) {
     createFolder('client/collections');
     createFolder('client/routers');
     copyTemplate('client/routers/router.js');
+    createFolder('client/templates');
     createFolder('client/lib');
     copyTemplate('client/lib/jquery.js');
     copyTemplate('client/lib/underscore.js');

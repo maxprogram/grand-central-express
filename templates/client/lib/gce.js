@@ -41,27 +41,31 @@
             appIsHandlingError = true;
             handleError(msg, url, line);
         }
-        return false;
+        return true;
     };
 
     function handleError(msg, url, line) {
         var arr = url.split('/'), file = '';
         for (var i = 3; i < arr.length; i++) file += '/'+arr[i];
 
-        var files = gce[file][0],
-            lines = gce[file][1],
-            count = 0, done = false;
+        if (!gce.files[file]) {
+            gce.error('("' + file + '" not found) '+msg);
+        } else {
+            var files = gce.files[file][0],
+                lines = gce.files[file][1],
+                count = 0, done = false;
 
-        files.push('');
-        for (i in files) {
-            if (line < count && !done) {
-                line -= (count - lines[i-1] - 1);
-                file = files[i-1];
-                done = true;
-            } else count += lines[i] + 5;
+            files.push('');
+            for (i in files) {
+                if (line < count && !done) {
+                    line -= (count - lines[i-1] - 1);
+                    file = files[i-1];
+                    done = true;
+                } else count += lines[i] + 5;
+            }
+
+            gce.error('('+file+':'+line+') '+msg);
         }
-
-        gce.error('('+file+':'+line+') '+msg);
     }
 
 })();

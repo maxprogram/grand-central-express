@@ -9,7 +9,8 @@ var app = app || {};
 (function($) {
 
     $(function () {
-        new app.AppView();
+        app.router = new app.Router();
+        Backbone.history.start();
     });
 
 })(jQuery);

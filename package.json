@@ -1,7 +1,7 @@
 {
   "name": "grand-central-express",
   "description": "A Rails-inspired Express framework for Node",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "preferGlobal": true,
   "keywords": ["express", "grand central", "router", "rails"],
   "author": {

@@ -95,7 +95,7 @@ else if (argv._[0] && _.contains(['new'], argv._[0])) {
     copyTemplate('client/app.js');
     createFolder('client/models');
     createFolder('client/views');
-    copyTemplate('client/views/app.js');
+    copyTemplate('client/views/appView.js');
     createFolder('client/collections');
     createFolder('client/routers');
     copyTemplate('client/routers/router.js');

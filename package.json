@@ -3,7 +3,7 @@
   "description": "A Rails-inspired Express framework for Node",
   "version": "0.0.4",
   "preferGlobal": true,
-  "keywords": ["express", "grand central", "router", "rails"],
+  "keywords": ["express", "grand central", "router", "rails", "backbone", "orm", "jst", "framework"],
   "author": {
     "name": "Max Olson",
     "url": "http://www.github.com/maxprogram/grand-central-express"

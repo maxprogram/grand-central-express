@@ -5,6 +5,10 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 ## TODO
 
 * Create custom ORM (in working __orm__ branch)
+* Use glob for getting Models
+* JS Compiler:
+    * Recursive requires (required files also checked)
+    * Include Handlebars?
 
 ## Documentation
 
@@ -259,8 +263,12 @@ this.$el.html(template({ DATA }));
 
 A Handlebars file (.hbs) requires the [Handlebars runtime library](http://handlebarsjs.com/) not included in GCE. Each template is also a Handlbars partial with the name `path.file` that can be accessed with `{{> path.file}}`. So for the example below, the partial name would be `list`.
 
-*client/templates/list.hbs*:
-```js
-var template = app.jst['list'];
-this.$el.html(template({ DATA }));
+Template in *client/templates/list.hbs*, assuming the template (or folder) is required in app.js:
+```html
+<script type="text/javascript" src="javascripts/handlebars-runtime.js"></script>
+<script type="text/javascript" src="javascripts/app.js"></script>
+<script type="text/javascript">
+    var template = app.jst['list'];
+    $("#list").html(template({ DATA }));
+</script>
 ```

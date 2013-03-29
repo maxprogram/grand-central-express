@@ -22,7 +22,7 @@ var fn = GrandCentral.prototype;
 fn.route = function(routesPath, controllerPath, routeORM) {
     var app = this.app;
 
-    routeORM = routeORM || true;
+    routeORM = (routeORM === null) ? true : routeORM;
     routesPath = routesPath || "config/routes";
     controllerPath = controllerPath || "controllers";
     routesPath = path.join(this.dir, routesPath);

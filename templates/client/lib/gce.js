@@ -1,6 +1,7 @@
 (function(){
     var root = this;
     var gce = root.gce = {};
+    var handleErrors = true;
 
     gce.log = function(msg, type) {
         type = type || 'log';
@@ -41,7 +42,7 @@
             appIsHandlingError = true;
             handleError(msg, url, line);
         }
-        return true;
+        return handleErrors;
     };
 
     function handleError(msg, url, line) {

@@ -4,9 +4,14 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 ## TODO
 
-* Scaffolding generators
-    * gce generate scaffold
-    * gce backbone collection (with scaffold?)
+* Create custom ORM (in working __orm__ branch)
+* Use glob for getting Models
+* When creating new app, don't overwrite package.json (extend it with required extras)
+* Use layouts in views/EJS rendering <%= yield %>
+    * render views partials within EJS
+* JS Compiler:
+    * Recursive requires (required files also checked)
+    * Include Handlebars?
 
 ## Documentation
 
@@ -14,9 +19,11 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 * [New Project](#NewProject)
 * [Launch Server](#LaunchServer)
-* Generate Scaffold
+* [Generate Scaffold](#GenerateScaffold)
 * [Generate Controller](#GenerateController)
 * [Generate Model](#GenerateModel)
+* [Generate Backbone Scaffold](#GenerateBackbone)
+* [Generate Backbone View](#GenerateBackboneView)
 * [Migrate](#Migrate)
 * [Version](#Version)
 
@@ -63,6 +70,7 @@ __gce generate controller NAME [action action]__
 Generates a controller and associated routes with provided actions.
 ```sh
 $ gce generate controller Company about team contact
+    create  controller/company.js
 ```
 
 ---------------------------------------
@@ -74,6 +82,48 @@ __gce generate model NAME [field:type field:type]__
 Generates a model with provided attributes.
 ```sh
 $ gce generate model book title:string author:string
+    create  models/Book.js
+```
+
+---------------------------------------
+<a name="GenerateScaffold" />
+### Generate Scaffold
+
+__gce generate scaffold NAME [field:type field:type]__
+
+Generates a model with provided attributes and a RESTful JSON controller. Also generates client-side Backbone model & collection. **The actions currently don't include __update__ or __destroy__. These are coming once the custom ORM is built.**
+
+Pass -c to avoid creating Backbone scaffold.
+```sh
+$ gce generate scaffold animal name:string species:string -c
+    create  models/Animal.js
+    create  controllers/animal.js
+    update  routes
+```
+
+---------------------------------------
+<a name="GenerateBackbone" />
+### Generate Backbone Scaffold
+
+__gce [backbone | bb] [scaffold | model] NAME [field:type field:type]__
+
+Generates Backbone model and collection for given name and fields.
+```sh
+$ gce bb scaffold animal name:string species:string
+    create  client/models/Animal.js
+    create  client/collections/animalList.js
+```
+
+---------------------------------------
+<a name="GenerateBackboneView" />
+### Generate Backbone View
+
+__gce [backbone | bb] view NAME__
+
+Generates Backbone view.
+```sh
+$ gce bb view item
+    create  client/views/itemView.js
 ```
 
 ---------------------------------------
@@ -117,21 +167,23 @@ gce.route();
 In __/config/routes.js__:
 ```js
 module.exports = function(match, resources) {
-    match('/',            'home#index');
-    match('/users',       'user#list', {via: 'post'});
-    resources('/project', 'project');
+    match('/',      'home#index');
+    match('/users', 'user#list', {via: 'post'});
+    resources('/animal', 'animal');
 };
 ```
 Routes:
 ```
-GET    /             => /controllers/home.js#index
-POST   /users        => /controllers/user.js#list
-GET    /project      => /controllers/project.js#index
-GET    /project/:id  => /controllers/project.js#show
-POST   /project      => /controllers/project.js#create
-PUT    /project/:id  => /controllers/project.js#update
-DELETE /project/:id  => /controllers/project.js#destroy
-GET    /project/edit => /controllers/project.js#edit
+GET    /            => /controllers/home.js#index
+POST   /users       => /controllers/user.js#list
+GET    /animal      => /controllers/animal.js#index
+GET    /animal/:id  => /controllers/animal.js#show
+POST   /animal      => /controllers/animal.js#create
+PUT    /animal/:id  => /controllers/animal.js#update
+DELETE /animal/:id  => /controllers/animal.js#destroy
+GET    /animal/create     => /controllers/animal.js#create
+GET    /animal/edit/:id   => /controllers/animal.js#update
+GET    /animal/delete/:id => /controllers/animal.js#destroy
 ```
 
 ---------------------------------------
@@ -157,7 +209,6 @@ module.exports = function(val) {
         validations: {
             email: val.patterns.email('Invalid email')
         }
-
     };
 };
 ```
@@ -167,7 +218,7 @@ module.exports = function(val) {
 <a name="ORM" />
 ### ORM/ActiveRecord
 
-Uses [the ORM library by dresende](http://dresende.github.com/node-orm2/). Go there for more detailed documentation.
+Currently uses [node-orm2 by dresende](http://dresende.github.com/node-orm2/). Go there for more detailed documentation.
 
 Turned on by default, but can be turned off by passing `{orm: true}` to the GCE router.
 
@@ -175,7 +226,7 @@ Models are accessed in controllers:
 ```js
 exports.show = function(req, res, models) {
     var id = req.param('id');
-    models.Person.get(id, function(err, person) {
+    models.Person.findById(id, function(err, person) {
         if (err) throw err;
         res.json(person);
     });
@@ -186,15 +237,41 @@ exports.show = function(req, res, models) {
 <a name="Compiler" />
 ### Client-Side Compiler
 
-All client-side javascript goes in the __/client__ directory. When a file is requested, it is compiled using UglifyJS into the public __/javascripts__ directory. Other javascipt files can be required using `//= require` or `//= require_tree`, which will be compiled into the requested file.
+All client-side javascript goes in the __/client__ directory. When a file is requested, it is compiled into a single JS file in the public __/javascripts__ directory. Other javascipt files can be required using `//= require` or `//= require_tree`, which will be compiled into the requested file.
+
+In the *development* environment, required JS files are concatenated and labeled as is. The GCE client-side library handles errors to return the correct file names and line numbers for debugging.
+
+In *production*, they are minified using UglifyJS.
 
 __/client/test.js__:
 ```js
 //= require lib/jquery
+//= require_tree ./ui
 
 $(function(){ document.write("Hello World") });
 ```
-This would output to __javascripts/test.js__, and be linked to in views as:
+This would output to __javascripts/test.js__, and will include the required files/directories in the order they are listed. It can be linked to in views as:
 ```html
 <script type="text/javascript" src="javascripts/test.js"></script>
+```
+__Templating__
+
+Javascript templating is also supported. Templates should go in the *client/templates* folder. GCE supports __Underscore (.ejs)__ and __Handlebars (.hbs)__ templates. The templates can be accessed through `app.jst['path/file']`.
+
+So if your template's actual path was *client/templates/home/index.ejs* the corresponding Backbone code would be:
+```js
+var template = app.jst['home/index'];
+this.$el.html(template({ DATA }));
+```
+
+A Handlebars file (.hbs) requires the [Handlebars runtime library](http://handlebarsjs.com/) not included in GCE. Each template is also a Handlbars partial with the name `path.file` that can be accessed with `{{> path.file}}`. So for the example below, the partial name would be `list`.
+
+Template in *client/templates/list.hbs*, assuming the template (or folder) is required in app.js:
+```html
+<script type="text/javascript" src="javascripts/handlebars-runtime.js"></script>
+<script type="text/javascript" src="javascripts/app.js"></script>
+<script type="text/javascript">
+    var template = app.jst['list'];
+    $("#list").html(template({ DATA }));
+</script>
 ```

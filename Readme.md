@@ -7,6 +7,8 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 * Create custom ORM (in working __orm__ branch)
 * Use glob for getting Models
 * When creating new app, don't overwrite package.json (extend it with required extras)
+* Use layouts in views/EJS rendering <%= yield %>
+    * render views partials within EJS
 * JS Compiler:
     * Recursive requires (required files also checked)
     * Include Handlebars?

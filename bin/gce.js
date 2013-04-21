@@ -8,6 +8,7 @@ var _       = require('underscore'),
     exec    = require('child_process').exec,
     argv    = require('optimist').argv,
     ejs     = require('ejs'),
+    log     = require('../lib/log'),
     config  = require('../lib/config'),
     GCE     = require('../index.js');
 
@@ -28,13 +29,13 @@ if (argv._[0] && _.contains(['server', 's', 'start', 'run'], argv._[0])) {
     var port = argv.p || app.get('port');
 
     http.createServer(app).listen(port, function(){
-        console.log("Grand Central Express server listening on port " + port);
+        log.log("Grand Central Express server listening on port " + port);
     });
 }
 
 // Gets version
 else if (argv.v || argv.version || (argv._[0] && _.contains(['v', 'version'], argv._[0]))) {
-    console.log('v' + config.version());
+    log.log('v' + config.version());
 }
 
 // Migrate models to database
@@ -46,10 +47,12 @@ else if (argv._[0] && _.contains(['migrate', 'mig'], argv._[0])) {
     app.getModels(function(models) {
         // Iterates over & syncs available models
         _.keys(models).forEach(function(i) {
+            /*
             models[i].migrate(function(err) {
                 if (err) Error(err);
                 report('migrate', i);
             });
+            */
         });
     });
 }
@@ -272,26 +275,7 @@ function pathDoesntExist(p) {
 }
 
 function report(task, file) {
-    var bold  = '\033[1m',
-        blue  = '\033[34m',
-        green = '\033[32m',
-        red   = '\033[31m',
-        reset = '\033[0m';
-
-    function cols(txt) {
-        var str = "", spaces = 12 - txt.length;
-        for (var i = 0; i < spaces; i++) str += " ";
-        return str += txt + "  ";
-    }
-
-    if (_.contains(['create','run','migrate'], task))
-        console.log(bold + green + cols(task) + reset + file);
-    else if (_.contains(['exist','identical','update'], task))
-        console.log(bold + blue + cols(task) + reset + file);
-    else if (_.contains(['conflict','error'], task))
-        console.log(bold + red + cols(task) + reset + file);
-    else if (_.contains(['done'], task))
-        console.log(bold + cols(task) + reset + file);
+    return log.generator(task, file);
 }
 
 function Error(msg) {

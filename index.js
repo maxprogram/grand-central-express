@@ -1,25 +1,36 @@
 var path = require('path'),
     fs = require('fs');
 
-var Router = require('./lib/router'),
+var log = require('./lib/log'),
+    Router = require('./lib/router'),
     ORM = require('./lib/orm');
 
 module.exports = GrandCentral;
 
 function GrandCentral(app, dir) {
+    if (!app) log.error("Express app not found");
+    if (!dir) log.error("Project directory not found");
+
     this.app = app;
     this.dir = dir + '/';
     this.env = process.env.NODE_ENV || 'development';
     this.time = new Date();
 
-    var dbJSON = require(path.join(this.dir, 'config/db.json'))[this.env];
-    this.orm = new ORM(dir, dbJSON, this.env);
+    var db = path.join(this.dir, 'config/db.json');
+    if (!fs.existsSync(db)) {
+        log.warn("No database configuration found (config/db.json)");
+    } else {
+        var dbJSON = require(db);
+        this.orm = new ORM(dir, dbJSON, this.env);
+    }
 }
 
 var fn = GrandCentral.prototype;
 
 
 fn.route = function(options) {
+    options = options || {};
+
     var app = this.app,
         routesPath = options.routes || "config/routes",
         controllerPath = options.controllers || "controllers",
@@ -28,7 +39,7 @@ fn.route = function(options) {
     routesPath = path.join(this.dir, routesPath);
     controllerPath = path.join(this.dir, controllerPath);
 
-    if (routeORM) this.orm.getModels(function(models) {
+    if (orm && this.orm) this.orm.getModels(function(models) {
         return new Router(app, routesPath, controllerPath, models);
     });
     else return new Router(app, routesPath, controllerPath, null);

@@ -32,6 +32,7 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 * [Router](#Router)
 * [Models](#Models)
 * [ORM/ActiveRecord](#ORM)
+* [Database Connections](#Database)
 * [Client-side Compiler](#Compiler)
 
 ## Command Line
@@ -220,7 +221,36 @@ Methods and validations are still in development.
 
 Turned on by default, but can be turned off by passing `{orm: false}` to the GCE router.
 
+Models are accessed in controllers:
+```js
+exports.show = function(req, res, models) {
+    var id = req.param('id');
+    models.Person.find(id, function(err, person) {
+        if (err) throw err;
+        res.json(person);
+    });
+};
+```
+
 See [ORM Documentation](https://github.com/maxprogram/grand-central-express/tree/master/lib/orm)
+
+---------------------------------------
+<a name="Database" />
+### Database Connections
+
+Database connections are defined in `config/db.json`. For whatever database you use, make sure to include the package (mysql, pg, sqlite3) in your dependencies.
+```json
+{
+    "development": {
+        "adapter":  "sqlite3",
+        "host":     "",
+        "database": "db/development.sqlite3",
+        "username": "",
+        "password": ""
+    }
+}
+```
+The template defaults to using SQLite3 files for both _development_ and _production_.
 
 ---------------------------------------
 <a name="Compiler" />

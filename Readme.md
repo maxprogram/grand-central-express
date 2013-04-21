@@ -212,28 +212,15 @@ module.exports = function(val) {
     };
 };
 ```
-`val` contains ORM's [common validators](https://github.com/dresende/node-orm2/blob/master/lib/Validators.js). Or you can write your own.
+Methods and validations are still in development.
 
 ---------------------------------------
 <a name="ORM" />
 ### ORM/ActiveRecord
 
-Turned on by default, but can be turned off by passing `false` as the 3rd parameter to the GCE router.
+Turned on by default, but can be turned off by passing `{orm: false}` to the GCE router.
 
-Models are accessed in controllers:
-```js
-exports.show = function(req, res, models) {
-    var id = req.param('id');
-    models.Person.find(id, function(err, person) {
-        if (err) throw err;
-        res.json(person);
-    });
-};
-```
-Methods (all chainable):
-* .all()
-* .find()
-* .where()
+See [ORM Documentation](https://github.com/maxprogram/grand-central-express/tree/master/lib/orm)
 
 ---------------------------------------
 <a name="Compiler" />

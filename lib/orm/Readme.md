@@ -1,6 +1,16 @@
+
+## TODO
+
+* MySQL Pool Connections
+* Create object for Model.new() & .save()
+* Model validations
+* Model relationships (hasMany, hasOne, belongsTo)
+* Migration / synchronization
+* query/queue/run
+
 ## Custom ORM
 
-*  Connects with
+* Connects with
     * MySQL
     * Postgres
     * SQLite3
@@ -13,13 +23,13 @@
     * .order()
     * .limit()
     * .offset()
-    * .returning()
     * .insert()
     * .update()
-    * .destroy()
-* Other functions
+    * .remove()
+* Other functions/aliases
     * .findByIdAndUpdate()
     * .findByIdAndRemove()
+    * .create()
     * .getColumns()
 * Query & queue
     * .query() *(on SQL datbases)* -- executes the given query

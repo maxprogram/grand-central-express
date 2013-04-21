@@ -12,8 +12,8 @@ function GrandCentral(app, dir) {
     this.env = process.env.NODE_ENV || 'development';
     this.time = new Date();
 
-    var db = this.getDatabaseUrl();
-    this.orm = new ORM(dir, db[0], db[1]);
+    var dbJSON = require(path.join(this.dir, 'config/db.json'))[this.env];
+    this.orm = new ORM(dir, dbJSON, this.env);
 }
 
 var fn = GrandCentral.prototype;
@@ -44,23 +44,4 @@ fn.uglify = function() {
         minify: minify,
         time: this.time
     });
-};
-
-fn.getDatabaseUrl = function(dbFile) {
-    dbFile = dbFile || 'config/db.json';
-    dbFile = path.join(this.dir, dbFile);
-
-    var db = require(dbFile)[this.env];
-
-    if (db.adapter == "sqlite3") {
-        db.adapter = "sqlite";
-        db.host = db.username = db.password = "";
-        db.database = path.join(this.dir, db.database);
-    }
-
-    var login = (db.username!=="") ? db.username + ":" + db.password + "@" : "",
-        host = (db.host!=="") ? db.host + "/" : "",
-        uri = db.adapter + "://" + login + host + db.database;
-
-    return [db.adapter, uri];
 };

@@ -218,20 +218,22 @@ module.exports = function(val) {
 <a name="ORM" />
 ### ORM/ActiveRecord
 
-Currently uses [node-orm2 by dresende](http://dresende.github.com/node-orm2/). Go there for more detailed documentation.
-
-Turned on by default, but can be turned off by passing `{orm: true}` to the GCE router.
+Turned on by default, but can be turned off by passing `false` as the 3rd parameter to the GCE router.
 
 Models are accessed in controllers:
 ```js
 exports.show = function(req, res, models) {
     var id = req.param('id');
-    models.Person.findById(id, function(err, person) {
+    models.Person.find(id, function(err, person) {
         if (err) throw err;
         res.json(person);
     });
 };
 ```
+Methods (all chainable):
+* .all()
+* .find()
+* .where()
 
 ---------------------------------------
 <a name="Compiler" />

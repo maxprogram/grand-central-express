@@ -19,12 +19,12 @@ function GrandCentral(app, dir) {
 var fn = GrandCentral.prototype;
 
 
-fn.route = function(routesPath, controllerPath, routeORM) {
-    var app = this.app;
+fn.route = function(options) {
+    var app = this.app,
+        routesPath = options.routes || "config/routes",
+        controllerPath = options.controllers || "controllers",
+        orm = (options.hasOwnProperty("orm")) ? options.orm : true;
 
-    routeORM = (!routeORM) ? true : routeORM;
-    routesPath = routesPath || "config/routes";
-    controllerPath = controllerPath || "controllers";
     routesPath = path.join(this.dir, routesPath);
     controllerPath = path.join(this.dir, controllerPath);
 

@@ -1,0 +1,16 @@
+{
+    "development": {
+        "adapter":  "sqlite3",
+        "host":     "",
+        "database": "db/development.sqlite3",
+        "username": "",
+        "password": ""
+    },
+    "production": {
+        "adapter":  "sqlite3",
+        "host":     "",
+        "database": "db/production.sqlite3",
+        "username": "",
+        "password": ""
+    }
+}

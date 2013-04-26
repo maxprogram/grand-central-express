@@ -73,7 +73,7 @@ else if (argv._[0] && _.contains(['new'], argv._[0])) {
     copyTemplate('app.js');
     copyTemplate('run.js');
     copyTemplate('Readme.md');
-    copyTemplate('.gitignore');
+    copyTemplate('gitignore');
 
     createFolder('config');
     copyTemplate('config/routes.js');
@@ -186,6 +186,7 @@ function copyTemplate(file, options) {
         file = path.join(path.dirname(file), options.name + end + ".js");
     }
 
+    if (file == "gitignore") file = ".gitignore";
     var filePath = ap(file);
     if (pathDoesntExist(filePath)) {
         fs.writeFileSync(filePath, template);

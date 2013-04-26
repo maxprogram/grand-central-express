@@ -17,7 +17,7 @@ var SQLModel = new ORM({
     password: "historyredtigerjump"
 }, "maps", {verbose: true});
 
-/*var SQLiteModel = new ORM({
+var SQLiteModel = new ORM({
     adapter: "sqlite3",
     host: "",
     database: "test.sqlite3",
@@ -25,12 +25,14 @@ var SQLModel = new ORM({
     password: ""
 }, "test", {verbose: true});
 
+var model = SQLiteModel.new()
 
 SQLiteModel.sync({name: "text"}, function(err, res) {
     if (err) throw err;
     console.log(JSON.stringify(res, null, 2));
 });*/
 
+/*
 SQLModel.remove(13, function(err, res) {
     if (err) throw err;
     console.log(JSON.stringify(res, null, 2));

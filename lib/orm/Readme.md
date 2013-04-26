@@ -1,9 +1,9 @@
 
 ### TODO
 
+* Create object for Model.new() & .save()
 * MySQL Pool Connections
 * GCE Error Handling
-* Create object for Model.new() & .save()
 * Model validations
 * Model relationships (hasMany, hasOne, belongsTo)
 * Migration / synchronization
@@ -23,7 +23,7 @@
     * .create()
     * .getColumns()
 * Query & queue
-    * .query() *(on SQL datbases)* -- executes the given query
+    * .query() *(on SQL databases)* -- executes the given query
     * .queue(query string or chain) (accepts array, string, object)
     * .run() -- executes all queries in the queue
 

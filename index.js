@@ -5,7 +5,8 @@ var log = require('./lib/log'),
     Router = require('./lib/router'),
     ORM = require('./lib/orm');
 
-module.exports = GrandCentral;
+exports.App = GrandCentral;
+exports.ActiveRecord = ORM.prototype.ActiveRecord;
 
 function GrandCentral(app, dir) {
     if (!app) log.error("Express app not found");
@@ -15,14 +16,7 @@ function GrandCentral(app, dir) {
     this.dir = dir + '/';
     this.env = process.env.NODE_ENV || 'development';
     this.time = new Date();
-
-    var db = path.join(this.dir, 'config/db.json');
-    if (!fs.existsSync(db)) {
-        log.warn("No database configuration found (config/db.json)");
-    } else {
-        var dbJSON = require(db);
-        this.orm = new ORM(dir, dbJSON, this.env);
-    }
+    this.orm = new ORM();
 }
 
 var fn = GrandCentral.prototype;

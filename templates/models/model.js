@@ -1,17 +1,18 @@
 // <%= name %> Model
 
-module.exports = function(val) {
-    return {
-        name: "<%= name %>",
+var AR = require('grand-central-express').ActiveRecord;
+module.exports = new AR({
 
-        schema: {<% fields.forEach(function(f,i){ %>
-            <%= f[0] %>: <%=: f[1] | capitalize %><%= (i+1==fields.length) ? '' : ',' %><% }); %>
-        },
+    name: "<%= name %>",
 
-        validations: {},
+    schema: {<% fields.forEach(function(f,i){ %>
+        <%= f[0] %>: <%=: f[1] | capitalize %><%= (i+1==fields.length) ? '' : ',' %><% }); %>
+    },
 
-        methods: {},
+    validations: {},
 
-        relationships: []
-    };
-};
+    methods: {},
+
+    relationships: []
+
+});

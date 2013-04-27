@@ -3,7 +3,7 @@ var express = require('express'),
     GrandCentral = require('grand-central-express');
 
 var app = express(),
-    gce = new GrandCentral(app, __dirname);
+    gce = new GrandCentral.App(app, __dirname);
 
 app.configure(function(){
     app.set('port', process.env.PORT || 3000);

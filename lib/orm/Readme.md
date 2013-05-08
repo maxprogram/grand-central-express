@@ -29,6 +29,7 @@
 
 ### Inspiration
 
+* [JugglingDB](https://github.com/1602/jugglingdb)
 * [Node-ORM](https://github.com/dresende/node-orm2)
 * [Model](https://npmjs.org/package/model)
 * [Persist](https://npmjs.org/package/persist)

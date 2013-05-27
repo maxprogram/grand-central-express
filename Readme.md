@@ -4,7 +4,11 @@ A Rails-inspired Express framework for Node. Integrates with ejs view engine, LE
 
 ## TODO
 
-* Create custom ORM (in working __orm__ branch)
+* Spin-off into seperate repo/packages
+    * Grand Central Records
+    * Grand Central Pipeline
+* Make GCE ORM agnostic (able to use GCR, JugglingDB, Node-ORM)
+
 * Use glob for getting Models
 * When creating new app, don't overwrite package.json (extend it with required extras)
 * Use layouts in views/EJS rendering <%= yield %>

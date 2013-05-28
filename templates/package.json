@@ -10,6 +10,7 @@
         "express": "3.0.0rc5",
         "ejs": "*",
         "grand-central-express": "*",
+        "grand-central-records": "*",
         "less-middleware": "*",
         "sqlite3": "*"
     }

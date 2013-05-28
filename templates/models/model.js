@@ -1,7 +1,8 @@
 // <%= name %> Model
 
-var AR = require('grand-central-express').ActiveRecord;
-module.exports = new AR({
+var Model = require('grand-central-express').Model;
+
+module.exports = new Model({
 
     name: "<%= name %>",
 

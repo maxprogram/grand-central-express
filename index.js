@@ -6,7 +6,7 @@ var log = require('./lib/log'),
     ORM = require('./lib/orm');
 
 exports.App = GrandCentral;
-exports.ActiveRecord = ORM.prototype.ActiveRecord;
+exports.Model = ORM.prototype.Model;
 
 function GrandCentral(app, dir) {
     if (!app) log.error("Express app not found");

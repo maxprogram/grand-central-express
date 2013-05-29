@@ -2,7 +2,7 @@ var path = require('path'),
     fs = require('fs');
 
 var log = require('./lib/log'),
-    Router = require('./lib/router'),
+    gcj = require('grand-central-junction'),
     ORM = require('./lib/orm');
 
 exports.App = GrandCentral;
@@ -17,6 +17,12 @@ function GrandCentral(app, dir) {
     this.env = process.env.NODE_ENV || 'development';
     this.time = new Date();
     this.orm = new ORM();
+
+    var self = this;
+    app.getModels = function(cb) {
+        if (self.useORM) return self.orm.getModels(cb);
+        else return cb("ORM is not being used");
+    };
 }
 
 var fn = GrandCentral.prototype;
@@ -24,29 +30,31 @@ var fn = GrandCentral.prototype;
 
 fn.route = function(options) {
     options = options || {};
+    var self = this;
 
-    var app = this.app,
-        routesPath = options.routes || "config/routes",
-        controllerPath = options.controllers || "controllers",
-        orm = (options.hasOwnProperty("orm")) ? options.orm : true;
-
-    routesPath = path.join(this.dir, routesPath);
-    controllerPath = path.join(this.dir, controllerPath);
-
-    if (orm && this.orm) this.orm.getModels(function(models) {
-        return new Router(app, routesPath, controllerPath, models);
+    if (this.useORM) this.orm.getModels(function(models) {
+        return gcj.route(self.app, {
+            dir: self.dir,
+            models: models
+        });
     });
-    else return new Router(app, routesPath, controllerPath, null);
+    else return gcj.route(self.app, { dir: self.dir });
 };
 
-fn.uglify = function() {
+fn.pipeline = function(options) {
+    options = options || {};
+
     var src  = path.join(this.dir, "client"),
         dest = path.join(this.dir, "assets", "javascripts"),
-        minify = (this.env == 'development') ? false : true;
-    return require('./lib/uglify')({
-        src: src,
-        dest: dest,
-        minify: minify,
-        time: this.time
-    });
+        ops = {
+            source: src,
+            dest: dest
+        };
+
+    if (options.minify) ops.minify = options.minify;
+    if (options.force) ops.force = options.force;
+
+    return require('grand-central-pipeline')(ops);
 };
+
+fn.uglify = fn.pipeline;

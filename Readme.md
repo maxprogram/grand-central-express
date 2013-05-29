@@ -1,11 +1,17 @@
 # Grand Central Express
 
-A Rails-inspired Express framework for Node. Integrates with ejs view engine, LESS CSS compiling, and Backbone.js. This is a work in progress. Everything featured in the docs below should be functional.
+A modular Express framework for Node. Integrates the following libraries and features:
+
+* __[Grand Central Junction](https://github.com/maxprogram/grand-central-junction)__ -- a simple Rails-inspired router built on top of Express.
+* __[Grand Central Pipeline]()__ -- an asset pipeline designed specifically for javascript concatenation and minimization.
+* __Command-line scaffold generator__ --
+* Uses ejs view engine and LESS CSS compiling
+* Uses Backbone.js for front-end framework
+* __ORM integration__ with either [Grand Central Records](https://github.com/maxprogram/grand-central-records), JugglingDB, or Node-ORM.
 
 ## TODO
 
 * Spin-off into seperate repo/packages
-    * Grand Central Records
     * Grand Central Pipeline
 * Make GCE ORM agnostic (able to use GCR, JugglingDB, Node-ORM)
 
@@ -137,7 +143,7 @@ $ gce bb view item
 
 __gce migrate__
 
-Migrates and syncs your model schemas to the database. Use the __-e__ option to change database environments.
+[Not currently functional] Migrates and syncs your model schemas to the database. Use the __-e__ option to change database environments.
 
 ---------------------------------------
 <a name="Version" />
@@ -154,42 +160,7 @@ Gets your version of Grand Central Express.
 <a name="Router" />
 ### Router
 
-__#route(options)__
-
-* *options.routes* is the routes path (defaults to `'config/routes'`)
-* *options.controllers* is the controllers path (defaults to `'controllers'`)
-* *options.orm* toggles use of ORM in controllers
-
-```js
-var express = require('express'),
-    GrandCentral = require('grand-central-express'),
-    app = express(),
-    gce = new GrandCentral(app, __dirname);
-
-gce.route();
-```
-
-In __/config/routes.js__:
-```js
-module.exports = function(match, resources) {
-    match('/',      'home#index');
-    match('/users', 'user#list', {via: 'post'});
-    resources('/animal', 'animal');
-};
-```
-Routes:
-```
-GET    /            => /controllers/home.js#index
-POST   /users       => /controllers/user.js#list
-GET    /animal      => /controllers/animal.js#index
-GET    /animal/:id  => /controllers/animal.js#show
-POST   /animal      => /controllers/animal.js#create
-PUT    /animal/:id  => /controllers/animal.js#update
-DELETE /animal/:id  => /controllers/animal.js#destroy
-GET    /animal/create     => /controllers/animal.js#create
-GET    /animal/edit/:id   => /controllers/animal.js#update
-GET    /animal/delete/:id => /controllers/animal.js#destroy
-```
+See [Grand Central Junction](https://github.com/maxprogram/grand-central-junction). Default routes file is `/config/routes.js`, default controllers path is `/controllers`.
 
 ---------------------------------------
 <a name="Models" />
@@ -197,33 +168,27 @@ GET    /animal/delete/:id => /controllers/animal.js#destroy
 
 Defined in the `/models` folder, with capitalized names like `Person.js`. The model is defined like so:
 ```js
-module.exports = function(val) {
-    return {
-        name: "Person",
-        schema: {
-            name: String,
-            email: String,
-            admin: Boolean,
-            rank: Number
-        },
-        methods: {
-            isAdmin: function() {
-                return this.admin;
-            }
-        },
-        validations: {
-            email: val.patterns.email('Invalid email')
-        }
-    };
-};
+var Model = require('grand-central-express').Model;
+module.exports = new Model({
+    name: "Person",
+    schema: {
+        name: String,
+        email: String,
+        admin: Boolean,
+        rank: Number
+    }
+});
 ```
-Methods and validations are still in development.
+Methods, validations and relationships are still in development.
 
 ---------------------------------------
 <a name="ORM" />
 ### ORM/ActiveRecord
 
-Turned on by default, but can be turned off by passing `{orm: false}` to the GCE router.
+The default ORM is [Grand Central Records](), but can be quickly changed to [JugglingDB](https://github.com/1602/jugglingdb) or [Node-ORM](https://github.com/dresende/node-orm2) using the following steps:
+
+1. Change your dependency `package.json` from `'grand-central-records'` to either `'jugglingdb'` or `'orm'`
+2. In `app.js`, change...
 
 Models are accessed in controllers:
 ```js
@@ -235,8 +200,6 @@ exports.show = function(req, res, models) {
     });
 };
 ```
-
-See [ORM Documentation](https://github.com/maxprogram/grand-central-express/tree/master/lib/orm)
 
 ---------------------------------------
 <a name="Database" />
@@ -254,47 +217,10 @@ Database connections are defined in `config/db.json`. For whatever database you 
     }
 }
 ```
-The template defaults to using SQLite3 files for both _development_ and _production_.
+The template defaults to using SQLite3 files for both __development__ and __production__.
 
 ---------------------------------------
 <a name="Compiler" />
-### Client-Side Compiler
+### Asset Pipeline & Client-Side Compiler
 
-All client-side javascript goes in the __/client__ directory. When a file is requested, it is compiled into a single JS file in the public __/javascripts__ directory. Other javascipt files can be required using `//= require` or `//= require_tree`, which will be compiled into the requested file.
-
-In the *development* environment, required JS files are concatenated and labeled as is. The GCE client-side library handles errors to return the correct file names and line numbers for debugging.
-
-In *production*, they are minified using UglifyJS.
-
-__/client/test.js__:
-```js
-//= require lib/jquery
-//= require_tree ./ui
-
-$(function(){ document.write("Hello World") });
-```
-This would output to __javascripts/test.js__, and will include the required files/directories in the order they are listed. It can be linked to in views as:
-```html
-<script type="text/javascript" src="javascripts/test.js"></script>
-```
-__Templating__
-
-Javascript templating is also supported. Templates should go in the *client/templates* folder. GCE supports __Underscore (.ejs)__ and __Handlebars (.hbs)__ templates. The templates can be accessed through `app.jst['path/file']`.
-
-So if your template's actual path was *client/templates/home/index.ejs* the corresponding Backbone code would be:
-```js
-var template = app.jst['home/index'];
-this.$el.html(template({ DATA }));
-```
-
-A Handlebars file (.hbs) requires the [Handlebars runtime library](http://handlebarsjs.com/) not included in GCE. Each template is also a Handlbars partial with the name `path.file` that can be accessed with `{{> path.file}}`. So for the example below, the partial name would be `list`.
-
-Template in *client/templates/list.hbs*, assuming the template (or folder) is required in app.js:
-```html
-<script type="text/javascript" src="javascripts/handlebars-runtime.js"></script>
-<script type="text/javascript" src="javascripts/app.js"></script>
-<script type="text/javascript">
-    var template = app.jst['list'];
-    $("#list").html(template({ DATA }));
-</script>
-```
+See [Grand Central Pipeline](https://github.com/maxprogram/grand-central-pipeline).

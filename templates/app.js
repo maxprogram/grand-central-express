@@ -15,7 +15,7 @@ app.configure(function(){
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(require('less-middleware')({ src: __dirname + '/assets' }));
-    app.use(gce.uglify());
+    app.use(gce.pipeline());
     app.use(express.static(path.join(__dirname, 'assets')));
 });
 
@@ -23,7 +23,7 @@ app.configure('development', function(){
     app.use(express.errorHandler());
 });
 
-app.getModels = function(cb) { return gce.orm.getModels(cb); };
+gce.useORM = true;
 gce.route();
 
 module.exports = app;

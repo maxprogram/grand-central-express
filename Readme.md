@@ -11,17 +11,14 @@ A modular Express framework for Node. Integrates the following libraries and fea
 
 ## TODO
 
-* Spin-off into seperate repo/packages
-    * Grand Central Pipeline
 * Make GCE ORM agnostic (able to use GCR, JugglingDB, Node-ORM)
+* Testing for command-line interface
+* Testing for Express integration
 
 * Use glob for getting Models
 * When creating new app, don't overwrite package.json (extend it with required extras)
 * Use layouts in views/EJS rendering <%= yield %>
     * render views partials within EJS
-* JS Compiler:
-    * Recursive requires (required files also checked)
-    * Include Handlebars?
 
 ## Documentation
 

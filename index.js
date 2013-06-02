@@ -11,7 +11,7 @@ function GrandCentral(app, dir, useORM) {
     if (!app) log.error("Express app not found");
     if (!dir) log.error("Project directory not found");
 
-    this.useORM = useORM || true;
+    this.useORM = (typeof useORM === 'boolean') ? useORM : true;
     this.app = app;
     this.dir = dir + '/';
     this.env = process.env.NODE_ENV || 'development';
@@ -30,6 +30,7 @@ function GrandCentral(app, dir, useORM) {
         function(model) {
             return { name: model.name };
         };
+    console.log(this.useORM);
 }
 
 var fn = GrandCentral.prototype;

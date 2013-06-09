@@ -30,7 +30,6 @@ function GrandCentral(app, dir, useORM) {
         function(model) {
             return { name: model.name };
         };
-    console.log(this.useORM);
 }
 
 var fn = GrandCentral.prototype;
@@ -58,7 +57,8 @@ fn.pipeline = function(options) {
         dest = path.join(this.dir, "assets", "javascripts"),
         ops = {
             source: src,
-            dest: dest
+            dest: dest,
+            templateDir: options.templateDir || 'templates'
         };
 
     if (options.minify) ops.minify = options.minify;

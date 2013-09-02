@@ -1,7 +1,7 @@
 {
   "name": "grand-central-express",
   "description": "A Rails-inspired Express framework for Node",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "preferGlobal": true,
   "keywords": ["express", "grand central", "router", "rails", "backbone", "orm", "jst", "framework"],
   "author": {
@@ -29,7 +29,7 @@
 
   "dependencies": {
         "grand-central-junction": "*",
-        "grand-central-pipeline": "0.0.7",
+        "grand-central-pipeline": "*",
         "underscore": "*",
         "underscore.string": "*",
         "glob": "3.1.21",

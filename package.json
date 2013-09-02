@@ -1,7 +1,7 @@
 {
   "name": "grand-central-express",
   "description": "A Rails-inspired Express framework for Node",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "preferGlobal": true,
   "keywords": ["express", "grand central", "router", "rails", "backbone", "orm", "jst", "framework"],
   "author": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/"
+    "url": "https://github.com/maxprogram/grand-central-express.git"
   },
 
   "main": "index",
@@ -29,7 +29,7 @@
 
   "dependencies": {
         "grand-central-junction": "*",
-        "grand-central-pipeline": "*",
+        "grand-central-pipeline": "0.0.7",
         "underscore": "*",
         "underscore.string": "*",
         "glob": "3.1.21",

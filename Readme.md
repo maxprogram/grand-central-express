@@ -11,13 +11,16 @@ A modular Express framework for Node. Integrates the following libraries and fea
 
 ## TODO
 
-* Make GCE ORM agnostic (able to use GCR, JugglingDB, Node-ORM)
+* Make GCE ORM agnostic (able to use GCR, sequalize, JugglingDB)
+* Create 'mincer' branch to replace GCP (both?)
+    * https://github.com/nodeca/mincer
+    * https://github.com/clarkdave/connect-mincer
 * Testing for command-line interface
 * Testing for Express integration
 
 * Use glob for getting Models
 * When creating new app, don't overwrite package.json (extend it with required extras)
-* Use layouts in views/EJS rendering <%= yield %>
+* Use layouts in views/EJS rendering <%= yield %> (use mincer)
     * render views partials within EJS
 
 ## Documentation

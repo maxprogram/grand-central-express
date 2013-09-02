@@ -54,7 +54,7 @@ fn.pipeline = function(options) {
     options = options || {};
 
     var src  = path.join(this.dir, "client"),
-        dest = path.join(this.dir, "assets", "javascripts"),
+        dest = path.join(this.dir, "assets"),
         ops = {
             source: src,
             dest: dest,

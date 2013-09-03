@@ -62,7 +62,7 @@ fn.pipeline = function(options) {
         };
 
     if (options.minify) ops.minify = options.minify;
-    if (options.force) ops.force = options.force;
+    if (options.verbose) ops.verbose = options.verbose;
 
     return require('grand-central-pipeline')(ops);
 };

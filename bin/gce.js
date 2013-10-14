@@ -18,9 +18,11 @@ var gcDir   = path.join(__dirname, ".."),
 
 // Launches express server
 if (argv._[0] && _.contains(['server', 's', 'start', 'run'], argv._[0])) {
+    appDir = path.resolve(appDir, argv._[1]);
     var app = path.join(appDir, "app.js"),
         isApp = fs.existsSync(app);
-    if (!isApp) app = path.join(appDir, "index.js");
+
+    if (!isApp || !require(app).get) return log.error('app.js not found!');
 
     var env = argv.e || argv.environment || argv.env || 'development';
     process.env.NODE_ENV = env;

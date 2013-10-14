@@ -11,7 +11,7 @@ A modular Express framework for Node. Integrates the following libraries and fea
 
 ## TODO
 
-* Make GCE ORM agnostic (able to use GCR, sequalize, JugglingDB)
+* Make GCE ORM agnostic (able to use GCR, sequelize, JugglingDB)
 * Create 'mincer' branch to replace GCP (both?)
     * https://github.com/nodeca/mincer
     * https://github.com/clarkdave/connect-mincer

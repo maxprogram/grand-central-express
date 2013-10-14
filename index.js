@@ -21,7 +21,7 @@ function GrandCentral(app, dir, useORM) {
     app.getModels = function(cb) {
         if (self.useORM) {
             var ORM = require('./lib/orm');
-            return new ORM().getModels(cb);
+            return new ORM(self.dir).getModels(cb);
         } else return cb("ORM is not being used");
     };
 
@@ -41,7 +41,7 @@ fn.route = function(options) {
 
     if (this.useORM) {
         var ORM = require('./lib/orm');
-        new ORM().getModels(function(models) {
+        new ORM(self.dir).getModels(function(models) {
             return gcj.route(self.app, {
                 dir: self.dir,
                 models: models

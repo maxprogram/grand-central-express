@@ -1,4 +1,10 @@
-# Grand Central Express
+# *DEPRECIATED*
+## Only the following 'spin-offs' are updated:
+* __[Grand Central Junction](https://github.com/maxprogram/grand-central-junction)__ -- a simple Rails-inspired router built on top of Express.
+* __[Grand Central Records](https://github.com/maxprogram/grand-central-records)__ -- a promise-based Node ORM/ActiveRecord library that can connect to MySQL, Postgres, and SQLite3. Allows chainable, raw or queueable queries.
+
+---------------------------------------
+# (OLD) Grand Central Express
 
 A modular Express framework for Node. Integrates the following libraries and features:
 
